@@ -6,17 +6,17 @@ The Entitlement System is designed to manage and provide access to various datas
 
 ## Domain Driven Design
 
-![Domain Diagram](https://github.com/aneesh-semantic-computing/entitlements-system/assets/45017458/f328e570-5732-4a52-ab8d-729f0a5ec7c7)
+![Domain Diagram](https://github.com/aneesh-semantic-computing/entitlements-system/assets/45017458/47dd5b1a-4971-4ac1-b11a-1b220cf423f5)
 
 
 ## Entity Relationship Diagram
 
-![ERD](https://github.com/aneesh-semantic-computing/entitlements-system/assets/45017458/0256c745-09a6-47ae-bd41-22a0026892c5)
+![ERD](https://github.com/aneesh-semantic-computing/entitlements-system/assets/45017458/98b2bc1d-4d0f-4855-89d0-0a38633b8b4f)
 
 
 ## High-Level Design
 
-![High Level Design](https://github.com/aneesh-semantic-computing/entitlements-system/assets/45017458/61f178aa-4faa-49d5-a19e-75e4873bd6d2)
+![High Level Design](https://github.com/aneesh-semantic-computing/entitlements-system/assets/45017458/b8c2dafe-cab4-4041-bf6b-f438b5b65061)
 
 
 ## Microservices
