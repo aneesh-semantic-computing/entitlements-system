@@ -9,7 +9,6 @@ export class UserController {
 
   @MessagePattern({ cmd: 'get-user-by-api-key' })
   async getUserByApiKey(@Payload() data: { apiKey: string }) {
-    console.log('service: ', data.apiKey);
     return this.userService.findByApiKey(data.apiKey);
   }
 

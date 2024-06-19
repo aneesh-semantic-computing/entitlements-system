@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install production dependencies.
-RUN yarn install --production
+RUN yarn install
 
 # Copy local code to the container image.
 COPY . .
