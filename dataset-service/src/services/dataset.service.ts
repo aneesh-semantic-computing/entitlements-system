@@ -1,9 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { PricingDataset } from '../models/pricing-dataset.model';
-import { UserManagementService } from './user-management.service';
+import { UserManagementServiceClient } from './user-management.service.client';
 import { QueryPricingDataDto } from '../dto/query-pricing-data.dto';
 import { DatasetConfig } from '../models/dataset-config.model';
+import { User } from '../interfaces/user.interface';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class DatasetService {
@@ -12,11 +14,13 @@ export class DatasetService {
     private readonly pricingDatasetModel: typeof PricingDataset,
     @InjectModel(DatasetConfig)
     private readonly datasetConfigModel: typeof DatasetConfig,
-    private readonly userManagementService: UserManagementService,
+    private readonly userManagementServiceClient: UserManagementServiceClient,
   ) {}
 
   async getPricingData(query: QueryPricingDataDto): Promise<PricingDataset[]> {
-    const user = await this.userManagementService.getUserByApiKey(query.apiKey);
+    const user: User | undefined = await lastValueFrom(
+      await this.userManagementServiceClient.getUserByApiKey(query.apiKey),
+    );
 
     if (!user) {
       throw new UnauthorizedException('Invalid API key');
@@ -28,9 +32,11 @@ export class DatasetService {
       });
     }
 
-    const userDatasetConfig = await this.userManagementService.getUserDatasetConfig(
-      user.userId,
-      query.symbol,
+    const userDatasetConfig =  await lastValueFrom(
+        await this.userManagementServiceClient.getUserDatasetConfig(
+        user.userId,
+        query.symbol
+      )
     );
 
     if (!userDatasetConfig || !userDatasetConfig[query.frequency]) {

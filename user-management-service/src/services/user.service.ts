@@ -27,4 +27,13 @@ export class UserService {
       periodTo,
     } as any);
   }
+
+  async getUserDatasetConfig(userId: number, symbol: string): Promise<UserDataConfig | null> {
+    return this.userDataConfigModel.findOne({
+      where: {
+        userId,
+        symbol,
+      },
+    });
+  }
 }

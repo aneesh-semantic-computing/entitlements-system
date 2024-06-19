@@ -9,6 +9,7 @@ export class UserController {
 
   @MessagePattern({ cmd: 'get-user-by-api-key' })
   async getUserByApiKey(@Payload() data: { apiKey: string }) {
+    console.log('service: ', data.apiKey);
     return this.userService.findByApiKey(data.apiKey);
   }
 
@@ -16,5 +17,10 @@ export class UserController {
   async grantAccess(@Payload() updateAccessDto: UpdateAccessDto) {
     await this.userService.grantAccess(updateAccessDto);
     return { success: true };
+  }
+
+  @MessagePattern({ cmd: 'get-user-dataset-config' })
+  async getUserDatasetConfig(@Payload() data: { userId: number, symbol: string }) {
+    return this.userService.getUserDatasetConfig(data.userId, data.symbol);
   }
 }

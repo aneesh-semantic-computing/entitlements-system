@@ -4,8 +4,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { DatasetController } from './controllers/dataset.controller';
 import { DatasetService } from './services/dataset.service';
 import { PricingDataset } from './models/pricing-dataset.model';
-import { UserManagementService } from './services/user-management.service';
 import { DatasetConfig } from './models/dataset-config.model';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { UserManagementServiceClient } from './services/user-management.service.client';
 
 @Module({
   imports: [
@@ -27,8 +28,18 @@ import { DatasetConfig } from './models/dataset-config.model';
       inject: [ConfigService],
     }),
     SequelizeModule.forFeature([PricingDataset, DatasetConfig]),
+      ClientsModule.register([
+        {
+          name: 'USER_MANAGEMENT_SERVICE',
+          transport: Transport.TCP,
+          options: {
+            host: 'user-management-service', // Docker service name
+            port: 3004,
+          },
+        },
+      ]),
   ],
   controllers: [DatasetController],
-  providers: [DatasetService, UserManagementService],
+  providers: [DatasetService, UserManagementServiceClient],
 })
 export class AppModule {}

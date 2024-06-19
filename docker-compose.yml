@@ -21,6 +21,9 @@ services:
       - "3002:3000"
     depends_on:
       - postgres
+    environment:
+      - USER_MANAGEMENT_SERVICE_HOST=user-management-service
+      - USER_MANAGEMENT_SERVICE_PORT=3004
     command: >
       sh -c "npm run seed && npm run start:dev"
 
