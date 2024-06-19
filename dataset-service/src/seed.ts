@@ -37,7 +37,7 @@ const seedData = async () => {
         frequency: item.frequency,
         priceUsd: record.priceUsd,
         datetime: new Date(record.datetime),
-      });
+      } as PricingDataset);
     }
   }
 

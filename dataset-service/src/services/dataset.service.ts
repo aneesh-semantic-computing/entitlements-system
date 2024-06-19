@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { PricingDataset } from '../models/pricing-dataset.model';
 import { UserManagementService } from './user-management.service';
 import { QueryPricingDataDto } from '../dto/query-pricing-data.dto';
-import { DatasetConfig } from 'src/models/dataset-config.model';
+import { DatasetConfig } from '../models/dataset-config.model';
 
 @Injectable()
 export class DatasetService {
