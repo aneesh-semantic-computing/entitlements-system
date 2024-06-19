@@ -6,7 +6,7 @@ import {
 } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { User } from '../interfaces/user.interface';
-import { AccessRequest } from 'models/access-request.model';
+import { AccessRequest } from '../models/access-request.model';
 
 @Injectable()
 export class UserManagementServiceClient {
@@ -31,9 +31,6 @@ export class UserManagementServiceClient {
     symbol: string,
     accessRequest: AccessRequest,
   ): Observable<void> {
-    console.log("UserManagementServiceClient - Calling TCP grantAccess", { 
-      userId, symbol, hourly: accessRequest.hourly, daily: accessRequest.daily, monthly: accessRequest.monthly, periodFrom: accessRequest.periodFrom || null, periodTo: accessRequest.periodTo || null
-    });
     return this.client.send<void>(
       { cmd: 'grant-access' },
       {

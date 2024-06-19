@@ -14,6 +14,7 @@ export class UserController {
 
   @MessagePattern({ cmd: 'grant-access' })
   async grantAccess(@Payload() updateAccessDto: UpdateAccessDto) {
-    return this.userService.grantAccess(updateAccessDto);
+    await this.userService.grantAccess(updateAccessDto);
+    return { success: true };
   }
 }

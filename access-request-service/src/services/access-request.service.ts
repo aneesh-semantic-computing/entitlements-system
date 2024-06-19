@@ -62,21 +62,16 @@ export class AccessRequestService {
       throw new Error('The request is already approved.');
     }
 
-    try {
-      accessRequest.status = 'Approved';
-      const savedAccessRequest = await accessRequest.save();
+    accessRequest.status = 'Approved';
+    const savedAccessRequest = await accessRequest.save();
+    await lastValueFrom(this.userManagementServiceClient.grantAccess(
+      user.userId,
+      accessRequest.symbol,
+      savedAccessRequest,
+    ));
+    await this.notificationServiceClient.notifyQuant(accessRequest);
 
-      await lastValueFrom(this.userManagementServiceClient.grantAccess(
-        user.userId,
-        accessRequest.symbol,
-        savedAccessRequest,
-      ));
-      await this.notificationServiceClient.notifyQuant(accessRequest);
-    } catch (error) {
-      throw new Error('An unknown error occured while approving the request');
-    }
-
-    return accessRequest;
+    return savedAccessRequest;
   }
 
   async reject(requestId: number, apiKey: string): Promise<AccessRequest> {

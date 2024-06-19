@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
+    "target": "es6",
     "lib": ["es2017", "dom"],
     "strict": true,
-    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@shared/*": ["../../shared/src/*"]
-    },
-    "incremental": true,
-    "typeRoots": ["./node_modules/@types", "../shared/src"], // Add this line
-    "types": ["node", "jest"],
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+      "*": ["node_modules/*"]
+    }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
