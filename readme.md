@@ -53,12 +53,6 @@ This service will send notifications to users and ops regarding the status of ac
       git clone <repository-url>
       cd entitlement-system
       ```
-2.   **Install dependencies**
-      ```sh
-      yarn install
-      ```
-3.    **Environment Variables**
-      - Create a .env file in the root directory and provide the necessary environment variables.
 
 4.    **Run Docker Compose**
       ```sh
