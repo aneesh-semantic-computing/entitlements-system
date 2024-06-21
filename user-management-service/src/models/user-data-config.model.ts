@@ -6,6 +6,7 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 import { User } from './user.model';
+import { DatasetConfig } from './dataset-config.model';
 
 @Table({
   tableName: 'user_dataset_config',
@@ -20,6 +21,7 @@ export class UserDataConfig extends Model<UserDataConfig> {
   })
   userId!: number;
 
+  @ForeignKey(() => DatasetConfig)
   @Column({
     type: DataType.STRING,
     allowNull: false,

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UseGuards, Patch, Query } from '@nestjs/common';
 import { AccessRequestService } from '../services/access-request.service';
 import { CreateAccessRequestDto } from '../dto/create-access-request.dto';
 import { RolesGuard } from '../guards/roles.guard';
@@ -34,5 +34,17 @@ export class AccessRequestController {
   @Roles('ops')
   async findAll() {
     return this.accessRequestService.findAll();
+  }
+
+  @Get(':id')
+  @Roles('ops')
+  async findByRequestId(@Param('id') requestId: number) {
+    return this.accessRequestService.findByRequestId(requestId);
+  }
+
+  @Get('/user/:userId')
+  @Roles('ops')
+  async findAllByUser(@Param('userId') userId: number, @Query('status') status: string) {
+    return this.accessRequestService.findAllByUser(userId, status);
   }
 }

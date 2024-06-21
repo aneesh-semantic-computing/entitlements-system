@@ -51,4 +51,9 @@ export class DatasetService {
   async findAll(): Promise<DatasetConfig[]> {
     return this.datasetConfigModel.findAll();
   }
+  async getDatasetConfigBySymbol(symbol: string): Promise<DatasetConfig> {
+    return this.datasetConfigModel.findOne({
+      where: {symbol}
+    });
+  }
 }

@@ -7,6 +7,7 @@ import { PricingDataset } from './models/pricing-dataset.model';
 import { DatasetConfig } from './models/dataset-config.model';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UserManagementServiceClient } from './services/user-management.service.client';
+import { DatasetTcpController } from './controllers/dataset-tcp.controller';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { UserManagementServiceClient } from './services/user-management.service.
         },
       ]),
   ],
-  controllers: [DatasetController],
+  controllers: [DatasetController, DatasetTcpController],
   providers: [DatasetService, UserManagementServiceClient],
 })
 export class AppModule {}

@@ -7,6 +7,7 @@ import { AccessRequestService } from './services/access-request.service';
 import { NotificationServiceClient } from './services/notification.service.client';
 import { UserManagementServiceClient } from './services/user-management.service.client';
 import { AccessRequest } from './models/access-request.model';
+import { DatasetServiceClient } from './services/dataset.service.client';
 
 @Module({
   imports: [
@@ -37,9 +38,17 @@ import { AccessRequest } from './models/access-request.model';
             port: 3004,
           },
         },
+        {
+          name: 'DATASET_SERVICE',
+          transport: Transport.TCP,
+          options: {
+            host: 'dataset-service', // Docker service name
+            port: 3005,
+          },
+        },
       ])
   ],
   controllers: [AccessRequestController],
-  providers: [AccessRequestService, NotificationServiceClient, UserManagementServiceClient],
+  providers: [AccessRequestService, NotificationServiceClient, UserManagementServiceClient, DatasetServiceClient],
 })
 export class AppModule {}
