@@ -23,6 +23,10 @@ export class AccessRequestService {
     private readonly notificationServiceClient: NotificationServiceClient,
   ) {}
 
+  private parseBoolean(value: any): boolean {
+    return value === 'true' || value === true;
+  }
+
   async create(
     createAccessRequestDto: CreateAccessRequestDto,
     apiKey: string,
@@ -35,18 +39,18 @@ export class AccessRequestService {
       throw new NotFoundException('User not found');
     }
 
-    const datasetConfig:DatasetConfig | undefined =  await lastValueFrom(
+    const datasetConfig: DatasetConfig | undefined =  await lastValueFrom(
       this.datasetServiceClient.getDatasetConfigBySymbol(createAccessRequestDto.symbol),
     );
 
-    if(!datasetConfig) {
+    if (!datasetConfig) {
       throw new NotFoundException('Dataset config not found');
     }
 
     const requestedFrequencies = [
-      { name: 'hourly', value: createAccessRequestDto.hourly },
-      { name: 'daily', value: createAccessRequestDto.daily },
-      { name: 'monthly', value: createAccessRequestDto.monthly },
+      { name: 'hourly', value: this.parseBoolean(createAccessRequestDto.hourly) },
+      { name: 'daily', value: this.parseBoolean(createAccessRequestDto.daily) },
+      { name: 'monthly', value: this.parseBoolean(createAccessRequestDto.monthly) },
     ];
 
     const invalidFrequencies = requestedFrequencies
@@ -62,9 +66,9 @@ export class AccessRequestService {
     const accessRequest = {
       userId: user.userId,
       symbol: createAccessRequestDto.symbol,
-      hourly: createAccessRequestDto.hourly || false,
-      daily: createAccessRequestDto.daily || false,
-      monthly: createAccessRequestDto.monthly || false,
+      hourly: this.parseBoolean(createAccessRequestDto.hourly),
+      daily: this.parseBoolean(createAccessRequestDto.daily),
+      monthly: this.parseBoolean(createAccessRequestDto.monthly),
       status: 'Pending',
     } as AccessRequest;
 
@@ -140,15 +144,15 @@ export class AccessRequestService {
 
   async findAllByUser(userId: number, symbol = "", status: string = "") {
     const whereConditions: WhereOptions<AccessRequest> = { userId: userId };
-  
+
     if (symbol) {
       whereConditions.symbol = symbol;
     }
-  
+
     if (status) {
       whereConditions.status = status;
     }
-  
+
     return this.accessRequestModel.findAll({
       where: whereConditions
     });
