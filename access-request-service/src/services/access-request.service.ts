@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { AccessRequest } from '../models/access-request.model';
 import { CreateAccessRequestDto } from '../dto/create-access-request.dto';
@@ -57,6 +57,8 @@ export class AccessRequestService {
       throw new BadRequestException(`Invalid frequencies requested: ${invalidFrequencies.join(', ')}`);
     }
 
+    const activeRequests = await this.findAllByUser(user.userId, createAccessRequestDto.symbol, 'Pending');
+
     const accessRequest = {
       userId: user.userId,
       symbol: createAccessRequestDto.symbol,
@@ -64,9 +66,18 @@ export class AccessRequestService {
       daily: createAccessRequestDto.daily || false,
       monthly: createAccessRequestDto.monthly || false,
       status: 'Pending',
-    } as AccessRequest
+    } as AccessRequest;
 
-    await this.accessRequestModel.upsert(accessRequest);
+    if (activeRequests && activeRequests.length > 0) {
+      // Update the existing request
+      await this.accessRequestModel.update(accessRequest, {
+        where: {
+          requestId: activeRequests[0].requestId
+        }
+      });
+    } else {
+      await this.accessRequestModel.create(accessRequest);
+    }
 
     await this.notificationServiceClient.notifyOps(accessRequest);
     return accessRequest;
@@ -77,16 +88,16 @@ export class AccessRequestService {
       this.userManagementServiceClient.getUserByApiKey(apiKey),
     );
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const accessRequest = await this.accessRequestModel.findByPk(requestId);
     if (!accessRequest) {
-      throw new Error('Access request not found');
+      throw new NotFoundException('Access request not found');
     }
 
     if (accessRequest.status !== "Pending") {
-      throw new Error('The request is already actioned.');
+      throw new BadRequestException('The request is already actioned.');
     }
 
     accessRequest.status = 'Approved';
@@ -104,17 +115,17 @@ export class AccessRequestService {
   async reject(requestId: number, apiKey: string): Promise<AccessRequest> {
     const accessRequest = await this.accessRequestModel.findByPk(requestId);
     if (!accessRequest) {
-      throw new Error('Access request not found');
+      throw new NotFoundException('Access request not found');
     }
     if (accessRequest.status !== "Pending") {
-      throw new Error('The request is already actioned.');
+      throw new BadRequestException('The request is already actioned.');
     }
     try {
       accessRequest.status = 'Rejected';
       await accessRequest.save();
       await this.notificationServiceClient.notifyQuant(accessRequest);
     } catch (error) {
-      throw new Error('An unknown error occured while rejecting the request');
+      throw new InternalServerErrorException('An unknown error occured while rejecting the request');
     }
     return accessRequest;
   }
