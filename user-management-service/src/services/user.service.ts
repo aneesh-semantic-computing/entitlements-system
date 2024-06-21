@@ -17,15 +17,35 @@ export class UserService {
 
   async grantAccess(updateAccessDto: UpdateAccessDto): Promise<void> {
     const { userId, symbol, hourly, daily, monthly, periodFrom, periodTo } = updateAccessDto;
-    await this.userDataConfigModel.upsert({
-      userId,
-      symbol,
-      hourly,
-      daily,
-      monthly,
-      periodFrom,
-      periodTo,
-    } as any);
+    
+    // Check if the entry already exists
+    const existingConfig = await this.userDataConfigModel.findOne({
+      where: { userId, symbol }
+    });
+
+    if (existingConfig) {
+      // Update only truthy values
+      const updateFields: Partial<UserDataConfig> = {};
+      if (hourly) updateFields.hourly = hourly;
+      if (daily) updateFields.daily = daily;
+      if (monthly) updateFields.monthly = monthly;
+      if (periodFrom) updateFields.periodFrom = periodFrom;
+      if (periodTo) updateFields.periodTo = periodTo;
+
+      await this.userDataConfigModel.update(updateFields, { where: { userId, symbol } });
+    } else {
+      // Insert with both truthy and falsy values
+      const newConfig = {
+        userId,
+        symbol,
+        hourly,
+        daily,
+        monthly,
+        periodFrom,
+        periodTo
+      };
+      await this.userDataConfigModel.create(newConfig as any);
+    }
   }
 
   async getUserDatasetConfig(userId: number, symbol: string): Promise<UserDataConfig | null> {

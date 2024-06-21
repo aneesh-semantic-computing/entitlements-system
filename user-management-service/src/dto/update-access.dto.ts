@@ -10,12 +10,15 @@ export class UpdateAccessDto {
   readonly symbol!: string;
 
   @IsBoolean()
+  @IsOptional()
   readonly hourly!: boolean;
 
   @IsBoolean()
+  @IsOptional()
   readonly daily!: boolean;
 
   @IsBoolean()
+  @IsOptional()
   readonly monthly!: boolean;
 
   @IsOptional()
