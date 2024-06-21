@@ -44,7 +44,7 @@ export class AccessRequestController {
 
   @Get('/user/:userId')
   @Roles('ops')
-  async findAllByUser(@Param('userId') userId: number, @Query('status') status: string) {
-    return this.accessRequestService.findAllByUser(userId, status);
+  async findAllByUser(@Param('userId') userId: number, @Query('symbol') symbol: string, @Query('status') status: string) {
+    return this.accessRequestService.findAllByUser(userId, symbol, status);
   }
 }

@@ -6,7 +6,7 @@ import { UserManagementServiceClient } from './user-management.service.client';
 import { NotificationServiceClient } from './notification.service.client';
 import { User } from '../interfaces/user.interface';
 import { lastValueFrom } from 'rxjs';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { DatasetServiceClient } from './dataset.service.client';
 import { DatasetConfig } from '../interfaces/dataset-config.interface';
 
@@ -127,18 +127,19 @@ export class AccessRequestService {
     return this.accessRequestModel.findByPk(requestId);
   }
 
-  async findAllByUser(userId: number, status: string = "") {
-    if(!status) {
-      return this.accessRequestModel.findAll({ 
-        where: {
-          userId: userId
-        }
-      });
+  async findAllByUser(userId: number, symbol = "", status: string = "") {
+    const whereConditions: WhereOptions<AccessRequest> = { userId: userId };
+  
+    if (symbol) {
+      whereConditions.symbol = symbol;
     }
-    return this.accessRequestModel.findAll({ 
-      where: {
-        [Op.and]:[{ userId: userId,  status: status}]
-      }
+  
+    if (status) {
+      whereConditions.status = status;
+    }
+  
+    return this.accessRequestModel.findAll({
+      where: whereConditions
     });
   }
 }
